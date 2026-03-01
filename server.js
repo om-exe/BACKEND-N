@@ -4,10 +4,9 @@ const cors = require('cors');
 require('dotenv').config();
 
 // Import Routes
-const authRoutes = require('./routes/auth');
-const sensorRoutes = require('./routes/sensors');
-const iotRoutes = require('./routes/iot');
-const plantRoutes = require('./routes/plants');
+const authRoutes = require('./auth');
+const sensorRoutes = require('./SensorData');
+const plantRoutes = require('./Plant');;
 
 const app = express();
 
@@ -33,10 +32,10 @@ mongoose.connect(process.env.MONGODB_URI, {
     .catch(err => console.log("❌ Mongo Error:", err));
 
 // ===== Routes =====
+// ===== Routes =====
 app.use('/api/auth', authRoutes);
 app.use('/api/plants', plantRoutes);
 app.use('/api/sensors', sensorRoutes);
-app.use('/api/iot', iotRoutes);
 
 // ===== Test Route =====
 app.get('/', (req, res) => {
