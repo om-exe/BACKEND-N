@@ -5,13 +5,11 @@ require('dotenv').config();
 
 // Import Routes
 const authRoutes = require('./auth');
-const sensorRoutes = require('./SensorData');
-const plantRoutes = require('./Plant');;
 
 const app = express();
 
 // ===== Middleware =====
-app.use(cors()); // Allow all origins (safe for college demo)
+app.use(cors());
 app.use(express.json());
 
 // Request logging middleware
@@ -24,18 +22,12 @@ app.use((req, res, next) => {
 });
 
 // ===== MongoDB Connection =====
-mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
+mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log("✅ MongoDB Connected"))
     .catch(err => console.log("❌ Mongo Error:", err));
 
 // ===== Routes =====
-// ===== Routes =====
 app.use('/api/auth', authRoutes);
-app.use('/api/plants', plantRoutes);
-app.use('/api/sensors', sensorRoutes);
 
 // ===== Test Route =====
 app.get('/', (req, res) => {
