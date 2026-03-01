@@ -1,0 +1,5 @@
+node_modules/
+nirvana-frontend/node_modules/
+nirvana-frontend/.next/
+nirvana-backend/node_modules/
+.env

@@ -1,0 +1,62 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+require('dotenv').config();
+
+// Import Routes
+const authRoutes = require('./routes/auth');
+const sensorRoutes = require('./routes/sensors');
+const iotRoutes = require('./routes/iot');
+const plantRoutes = require('./routes/plants');
+
+const app = express();
+
+// ===== Middleware =====
+app.use(cors()); // Allow all origins (safe for college demo)
+app.use(express.json());
+
+// Request logging middleware
+app.use((req, res, next) => {
+    console.log(`[${new Date().toLocaleTimeString()}] ${req.method} ${req.url}`);
+    if (req.method === 'POST') {
+        console.log('Body:', JSON.stringify(req.body).substring(0, 200));
+    }
+    next();
+});
+
+// ===== MongoDB Connection =====
+mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+    .then(() => console.log("✅ MongoDB Connected"))
+    .catch(err => console.log("❌ Mongo Error:", err));
+
+// ===== Routes =====
+app.use('/api/auth', authRoutes);
+app.use('/api/plants', plantRoutes);
+app.use('/api/sensors', sensorRoutes);
+app.use('/api/iot', iotRoutes);
+
+// ===== Test Route =====
+app.get('/', (req, res) => {
+    res.send("🚀 Nirvara Backend Server Running Successfully!");
+});
+
+// ===== 404 Handler =====
+app.use('*', (req, res) => {
+    res.status(404).json({ message: 'Route not found' });
+});
+
+// ===== Error Handler =====
+app.use((err, req, res, next) => {
+    console.error('Server Error:', err);
+    res.status(500).json({ message: 'Internal server error' });
+});
+
+// ===== Start Server =====
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+});
